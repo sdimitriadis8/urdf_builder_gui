@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# urdf_builder_proto.py — URDF Builder (optional origin/inertia/collision + corrected 3D)
-# Edited to:
-#  - place inertia matrix below Manual Inertia checkbox
-#  - hide Origin labels/fields until Origin is checked
-#  - collision section with Use identical / Manual set, immediate 3D update
-#  - geometry size fields adapt to geometry type (box: x,y,z; sphere: r; cylinder: r,length)
-
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QLineEdit, QComboBox, QPushButton,
