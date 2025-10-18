@@ -83,9 +83,9 @@ class URDFModel:
             if link.geom_type == 'box':
                 ET.SubElement(geom, 'box', {'size': f"{link.size[0]} {link.size[1]} {link.size[2]}"})
             elif link.geom_type == 'cylinder':
-                ET.SubElement(geom, 'cylinder', {'radius': str(link.size[0]/2), 'length': str(link.size[2])})
+                ET.SubElement(geom, 'cylinder', {'radius': str(link.size[0]), 'length': str(link.size[2])})
             elif link.geom_type == 'sphere':
-                ET.SubElement(geom, 'sphere', {'radius': str(link.size[0]/2)})
+                ET.SubElement(geom, 'sphere', {'radius': str(link.size[0])})
             # Collision: if enabled, use manual collision properties if present else visual
             if link.include_collision:
                 collision = ET.SubElement(l, 'collision')
@@ -96,9 +96,9 @@ class URDFModel:
                 if use_geom == 'box':
                     ET.SubElement(coll_geom, 'box', {'size': f"{use_size[0]} {use_size[1]} {use_size[2]}"})
                 elif use_geom == 'cylinder':
-                    ET.SubElement(coll_geom, 'cylinder', {'radius': str(use_size[0]/2), 'length': str(use_size[2])})
+                    ET.SubElement(coll_geom, 'cylinder', {'radius': str(use_size[0]), 'length': str(use_size[2])})
                 elif use_geom == 'sphere':
-                    ET.SubElement(coll_geom, 'sphere', {'radius': str(use_size[0]/2)})
+                    ET.SubElement(coll_geom, 'sphere', {'radius': str(use_size[0])})
         for joint in self.joints.values():
             j = ET.SubElement(robot, 'joint', {'name': joint.name, 'type': joint.jtype})
             ET.SubElement(j, 'parent', {'link': joint.parent})
@@ -268,15 +268,15 @@ class GLWidget(QOpenGLWidget):
                 glPushMatrix()
                 glTranslatef(0, 0, -sz/2.0)
                 quad = gluNewQuadric()
-                gluCylinder(quad, sx/2.0, sx/2.0, sz, 32, 4)
+                gluCylinder(quad, sx, sx, sz, 32, 4)
                 # end caps
-                glPushMatrix(); glTranslatef(0,0,0); gluDisk(quad, 0, sx/2.0, 32, 1); glPopMatrix()
-                glPushMatrix(); glTranslatef(0,0,sz); gluDisk(quad, 0, sx/2.0, 32, 1); glPopMatrix()
+                glPushMatrix(); glTranslatef(0,0,0); gluDisk(quad, 0, sx, 32, 1); glPopMatrix()
+                glPushMatrix(); glTranslatef(0,0,sz); gluDisk(quad, 0, sx, 32, 1); glPopMatrix()
                 glPopMatrix()
             elif link.geom_type == 'sphere':
                 glPushMatrix()
                 quad = gluNewQuadric()
-                gluSphere(quad, sx/2.0, 20, 20)
+                gluSphere(quad, sx, 20, 20)
                 glPopMatrix()
             glPopMatrix()
 
@@ -309,12 +309,12 @@ class GLWidget(QOpenGLWidget):
                     glPushMatrix()
                     glTranslatef(0, 0, -sz/2.0)
                     quad = gluNewQuadric()
-                    gluCylinder(quad, sx/2.0, sx/2.0, sz, 24, 4)
+                    gluCylinder(quad, sx, sx, sz, 24, 4)
                     glPopMatrix()
                 elif cgeom == 'sphere':
                     glPushMatrix()
                     quad = gluNewQuadric()
-                    gluSphere(quad, sx/2.0, 20, 20)
+                    gluSphere(quad, sx, 20, 20)
                     glPopMatrix()
 
                 glEnable(GL_LIGHTING)
@@ -499,8 +499,8 @@ class URDFBuilderUI(QWidget):
         lf.addRow(self.inertia_grid)
         # origin checkbox + labels+fields hidden until checked
         lf.addRow(self.manual_origin_cb)
-        lf.addRow(self.origin_label_xyz); lf.addRow(origin_h)
-        lf.addRow(self.origin_label_rpy); lf.addRow(rpy_h)
+        lf.addRow(self.origin_label_xyz, origin_h)
+        lf.addRow(self.origin_label_rpy, rpy_h)
         # collision panel
         lf.addRow(self.collision_cb)
         lf.addRow(self.collision_panel_widget)
