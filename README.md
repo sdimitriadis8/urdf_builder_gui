@@ -144,7 +144,7 @@ Using virtual environment (Recommended):
 
 ---
 
-## Quick Start
+## 📈 Quick Start
 ### Download the Application
 ```bash
 # Clone the repository
@@ -166,7 +166,7 @@ python3 urdf_builder_gui.py
 
 ---
 
-## Usage
+## 📖 Usage
 ### Basic Workflow
 
 1. **Create Links**
@@ -216,7 +216,7 @@ python3 urdf_builder_gui.py
 
 ---
 
-## Troubleshooting
+## 👨‍🔧 Troubleshooting
 ### Common Issues
 
 **"Command not found" errors:**
@@ -268,7 +268,7 @@ If you encounter issues:
 4. Contact me through email: info@28x.gr
 ---
 
-## File Structure
+## 🗂️ File Structure
 ```text
 
 urdf_builder_gui/
@@ -279,7 +279,7 @@ urdf_builder_gui/
 
 ---
 
-## Dependencies
+## 🖇️ Dependencies
 
 - **PyQt5:** GUI framework
 
@@ -318,6 +318,6 @@ estimation (mass + geometry)
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Feel free to submit pull requests or open issues for bugs and feature requests.
