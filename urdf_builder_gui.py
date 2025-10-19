@@ -375,41 +375,61 @@ class URDFBuilderUI(QWidget):
         self.update_preview_and_view()
 
     def _build_ui(self):
-        main = QHBoxLayout(self)
+        main = QVBoxLayout(self)
         main.setSpacing(10)
 
-        # LEFT column
-        left_v = QVBoxLayout(); left_v.setSpacing(8)
+        # TOP ROW: Add Link + Elements | Add Joint
+        top_row = QHBoxLayout()
+        top_row.setSpacing(10)
+
+        # LEFT: Add Link + Elements
+        left_column = QVBoxLayout()
+        left_column.setSpacing(8)
 
         # Add Link group
-        left_v.addWidget(QLabel("<b>Add Link</b>"))
-        link_g = QGroupBox(); lf = QFormLayout(); lf.setLabelAlignment(Qt.AlignRight)
-        self.link_name = QLineEdit(); self.link_name.setMaximumWidth(180)
-        self.geom_combo = QComboBox(); self.geom_combo.addItems(['box','cylinder','sphere']); self.geom_combo.setMaximumWidth(120)
+        left_column.addWidget(QLabel("<b>Add Link</b>"))
+        link_g = QGroupBox()
+        lf = QFormLayout()
+        lf.setLabelAlignment(Qt.AlignRight)
+        lf.setVerticalSpacing(8)  # Reduced vertical spacing
+        self.link_name = QLineEdit()
+        self.link_name.setMaximumWidth(180)
+        self.geom_combo = QComboBox()
+        self.geom_combo.addItems(['box','cylinder','sphere'])
+        self.geom_combo.setMaximumWidth(120)
         # react to geometry changes to update size labels
         self.geom_combo.currentTextChanged.connect(self._update_size_fields)
 
-        size_h = QHBoxLayout(); size_h.setSpacing(6)
+        size_h = QHBoxLayout()
+        size_h.setSpacing(6)
         # size widgets & labels (we'll adapt labels/visibility depending on geometry)
-        self.size_x_label = QLabel("x:"); self.size_x = QLineEdit("0.1")
-        self.size_y_label = QLabel("y:"); self.size_y = QLineEdit("0.1")
-        self.size_z_label = QLabel("z:"); self.size_z = QLineEdit("0.1")
+        self.size_x_label = QLabel("x:")
+        self.size_x = QLineEdit("0.1")
+        self.size_y_label = QLabel("y:")
+        self.size_y = QLineEdit("0.1")
+        self.size_z_label = QLabel("z:")
+        self.size_z = QLineEdit("0.1")
         for b in (self.size_x,self.size_y,self.size_z): b.setMaximumWidth(60)
         size_h.addWidget(self.size_x_label); size_h.addWidget(self.size_x)
         size_h.addWidget(self.size_y_label); size_h.addWidget(self.size_y)
         size_h.addWidget(self.size_z_label); size_h.addWidget(self.size_z)
 
         # mass + manual inertia checkbox (mass always visible)
-        mass_h = QHBoxLayout(); mass_h.setSpacing(8)
-        mass_label = QLabel(""); mass_label.setFixedWidth(36)
-        self.mass_input = QLineEdit("1.0"); self.mass_input.setMaximumWidth(80)
+        mass_h = QHBoxLayout()
+        mass_h.setSpacing(8)
+        mass_label = QLabel("")
+        mass_label.setFixedWidth(36)
+        self.mass_input = QLineEdit("1.0")
+        self.mass_input.setMaximumWidth(80)
         mass_h.addWidget(mass_label); mass_h.addWidget(self.mass_input)
         # Manual Inertia checkbox placed BEFORE inertia fields per request
-        self.manual_inertia_cb = QCheckBox("Inertia"); self.manual_inertia_cb.toggled.connect(self._toggle_inertia)
+        self.manual_inertia_cb = QCheckBox("Inertia")
+        self.manual_inertia_cb.toggled.connect(self._toggle_inertia)
         mass_h.addWidget(self.manual_inertia_cb)
 
         # inertia matrix (hidden by default) -> placed AFTER the checkbox (below it)
-        self.inertia_grid = QGridLayout(); self.inertia_grid.setSpacing(4)
+        self.inertia_grid = QGridLayout()
+        self.inertia_grid.setSpacing(4)
         self.inertia_fields = {}
         inertia_keys = [("ixx","ixy","ixz"),("ixy","iyy","iyz"),("ixz","iyz","izz")]
         defaults = {"ixx":"0.001","iyy":"0.001","izz":"0.001","ixy":"0","ixz":"0","iyz":"0"}
@@ -423,19 +443,28 @@ class URDFBuilderUI(QWidget):
                 if key in self.inertia_fields:
                     fld = self.inertia_fields[key]
                 else:
-                    fld = QLineEdit(defaults.get(key,"0")); fld.setMaximumWidth(70); fld.setVisible(False)
+                    fld = QLineEdit(defaults.get(key,"0"))
+                    fld.setMaximumWidth(70)
+                    fld.setVisible(False)
                     self.inertia_fields[key] = fld
-                lbl = QLabel(key + ":"); lbl.setVisible(False)
+                lbl = QLabel(key + ":")
+                lbl.setVisible(False)
                 self.inertia_grid.addWidget(lbl, r, c*2)
                 self.inertia_grid.addWidget(fld, r, c*2+1)
 
         # Manual origin checkbox + origin fields (hidden by default)
-        self.manual_origin_cb = QCheckBox("Origin"); self.manual_origin_cb.toggled.connect(self._toggle_origin)
+        self.manual_origin_cb = QCheckBox("Origin")
+        self.manual_origin_cb.toggled.connect(self._toggle_origin)
         # we will hide both the labels "Position (xyz)" and "Orientation (rpy)" until checkbox checked
-        self.origin_label_xyz = QLabel("Position (xyz)"); self.origin_label_xyz.setVisible(False)
-        self.origin_label_rpy = QLabel("Orientation (rpy)"); self.origin_label_rpy.setVisible(False)
-        origin_h = QHBoxLayout(); origin_h.setSpacing(6)
-        self.origin_x = QLineEdit("0"); self.origin_y = QLineEdit("0"); self.origin_z = QLineEdit("0")
+        self.origin_label_xyz = QLabel("Position (xyz)")
+        self.origin_label_xyz.setVisible(False)
+        self.origin_label_rpy = QLabel("Orientation (rpy)")
+        self.origin_label_rpy.setVisible(False)
+        origin_h = QHBoxLayout()
+        origin_h.setSpacing(6)
+        self.origin_x = QLineEdit("0")
+        self.origin_y = QLineEdit("0")
+        self.origin_z = QLineEdit("0")
         for b in (self.origin_x,self.origin_y,self.origin_z): b.setMaximumWidth(70); b.setVisible(False)
         origin_h.addWidget(QLabel("x:")); origin_h.itemAt(origin_h.count()-1).widget().setVisible(False)
         origin_h.addWidget(self.origin_x)
@@ -444,8 +473,11 @@ class URDFBuilderUI(QWidget):
         origin_h.addWidget(QLabel("z:")); origin_h.itemAt(origin_h.count()-1).widget().setVisible(False)
         origin_h.addWidget(self.origin_z)
 
-        rpy_h = QHBoxLayout(); rpy_h.setSpacing(6)
-        self.origin_r = QLineEdit("0"); self.origin_p = QLineEdit("0"); self.origin_yaw = QLineEdit("0")
+        rpy_h = QHBoxLayout()
+        rpy_h.setSpacing(6)
+        self.origin_r = QLineEdit("0")
+        self.origin_p = QLineEdit("0")
+        self.origin_yaw = QLineEdit("0")
         for b in (self.origin_r,self.origin_p,self.origin_yaw): b.setMaximumWidth(70); b.setVisible(False)
         rpy_h.addWidget(QLabel("roll:")); rpy_h.itemAt(rpy_h.count()-1).widget().setVisible(False)
         rpy_h.addWidget(self.origin_r)
@@ -457,16 +489,23 @@ class URDFBuilderUI(QWidget):
         # collision checkbox (option A: collision copies visual geometry by default)
         self.collision_cb = QCheckBox("Enable Collision")
         # collision panel that shows when checked
-        self.collision_panel_widget = QWidget(); self.collision_panel_layout = QFormLayout(self.collision_panel_widget)
+        self.collision_panel_widget = QWidget()
+        self.collision_panel_layout = QFormLayout(self.collision_panel_widget)
         self.collision_panel_widget.setVisible(False)
-        self.collision_mode = QComboBox(); self.collision_mode.addItems(["Use identical","Manual set"])
+        self.collision_mode = QComboBox()
+        self.collision_mode.addItems(["Use identical","Manual set"])
         self.collision_mode.currentTextChanged.connect(self._on_collision_mode_changed)
         # manual collision geometry widgets (hidden unless Manual set)
-        self.coll_geom_combo = QComboBox(); self.coll_geom_combo.addItems(['box','cylinder','sphere'])
-        self.coll_size_x = QLineEdit("0.1"); self.coll_size_y = QLineEdit("0.1"); self.coll_size_z = QLineEdit("0.1")
+        self.coll_geom_combo = QComboBox()
+        self.coll_geom_combo.addItems(['box','cylinder','sphere'])
+        self.coll_size_x = QLineEdit("0.1")
+        self.coll_size_y = QLineEdit("0.1")
+        self.coll_size_z = QLineEdit("0.1")
         for w in (self.coll_size_x, self.coll_size_y, self.coll_size_z): w.setMaximumWidth(70)
         coll_size_h = QHBoxLayout()
-        self.coll_size_x_label = QLabel("x:"); self.coll_size_y_label = QLabel("y:"); self.coll_size_z_label = QLabel("z:")
+        self.coll_size_x_label = QLabel("x:")
+        self.coll_size_y_label = QLabel("y:")
+        self.coll_size_z_label = QLabel("z:")
         coll_size_h.addWidget(self.coll_size_x_label); coll_size_h.addWidget(self.coll_size_x)
         coll_size_h.addWidget(self.coll_size_y_label); coll_size_h.addWidget(self.coll_size_y)
         coll_size_h.addWidget(self.coll_size_z_label); coll_size_h.addWidget(self.coll_size_z)
@@ -480,7 +519,8 @@ class URDFBuilderUI(QWidget):
         # also hide manual fields initially
         self.coll_geom_combo.currentTextChanged.connect(self._update_collision_size_fields)
 
-        add_link_btn = QPushButton("Add Link"); add_link_btn.clicked.connect(self._on_add_link)
+        add_link_btn = QPushButton("Add Link")
+        add_link_btn.clicked.connect(self._on_add_link)
 
         lf.addRow("Name", self.link_name)
         lf.addRow("Geometry", self.geom_combo)
@@ -498,52 +538,89 @@ class URDFBuilderUI(QWidget):
         lf.addRow(self.collision_panel_widget)
         lf.addRow(add_link_btn)
         link_g.setLayout(lf)
-        left_v.addWidget(link_g)
+        left_column.addWidget(link_g)
 
         # elements list
-        left_v.addWidget(QLabel("<b>Elements</b>"))
-        self.elements_list = QListWidget(); self.elements_list.setMaximumHeight(160)
+        left_column.addWidget(QLabel("<b>Elements</b>"))
+        self.elements_list = QListWidget()
+        self.elements_list.setMaximumHeight(160)
         self.elements_list.itemDoubleClicked.connect(self._load_selected_element)
-        left_v.addWidget(self.elements_list)
+        left_column.addWidget(self.elements_list)
         el_btns = QHBoxLayout()
-        self.delete_btn = QPushButton("Delete Selected"); self.delete_btn.clicked.connect(self._delete_selected)
-        self.edit_btn = QPushButton("Edit Selected"); self.edit_btn.clicked.connect(self._load_selected_element)
+        self.delete_btn = QPushButton("Delete Selected")
+        self.delete_btn.clicked.connect(self._delete_selected)
+        self.edit_btn = QPushButton("Edit Selected")
+        self.edit_btn.clicked.connect(self._load_selected_element)
         el_btns.addWidget(self.edit_btn); el_btns.addWidget(self.delete_btn)
-        left_v.addLayout(el_btns)
+        left_column.addLayout(el_btns)
 
-        # joint group (unchanged)
-        left_v.addWidget(QLabel("<b>Add Joint</b>"))
-        joint_g = QGroupBox(); jf = QFormLayout(); jf.setLabelAlignment(Qt.AlignRight)
-        self.joint_name = QLineEdit(); self.joint_name.setMaximumWidth(180)
-        self.joint_type = QComboBox(); self.joint_type.addItems(['revolute','continuous','prismatic','fixed']); self.joint_type.setMaximumWidth(120)
-        self.parent_combo = QComboBox(); self.child_combo = QComboBox(); self.parent_combo.setMaximumWidth(160); self.child_combo.setMaximumWidth(160)
-        origin_h2 = QHBoxLayout(); origin_h2.setSpacing(6)
-        self.j_origin_x = QLineEdit("0"); self.j_origin_y = QLineEdit("0"); self.j_origin_z = QLineEdit("0")
+        # RIGHT: Add Joint
+        right_column = QVBoxLayout()
+        right_column.setSpacing(8)
+        
+        # Add Joint section
+        joint_label = QLabel("<b>Add Joint</b>")
+        right_column.addWidget(joint_label)
+        joint_g = QGroupBox()
+        jf = QFormLayout()
+        jf.setLabelAlignment(Qt.AlignRight)
+        jf.setVerticalSpacing(8)  # Reduced vertical spacing
+        jf.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)  # Better field growth policy
+        
+        self.joint_name = QLineEdit()
+        self.joint_name.setMaximumWidth(180)
+        self.joint_type = QComboBox()
+        self.joint_type.addItems(['revolute','continuous','prismatic','fixed'])
+        self.joint_type.setMaximumWidth(120)
+        self.parent_combo = QComboBox()
+        self.child_combo = QComboBox()
+        self.parent_combo.setMaximumWidth(160)
+        self.child_combo.setMaximumWidth(160)
+        
+        origin_h2 = QHBoxLayout()
+        origin_h2.setSpacing(6)
+        self.j_origin_x = QLineEdit("0")
+        self.j_origin_y = QLineEdit("0")
+        self.j_origin_z = QLineEdit("0")
         for b in (self.j_origin_x,self.j_origin_y,self.j_origin_z): b.setMaximumWidth(70)
         origin_h2.addWidget(QLabel("x:")); origin_h2.addWidget(self.j_origin_x)
         origin_h2.addWidget(QLabel("y:")); origin_h2.addWidget(self.j_origin_y)
         origin_h2.addWidget(QLabel("z:")); origin_h2.addWidget(self.j_origin_z)
-        rpy_h2 = QHBoxLayout(); rpy_h2.setSpacing(6)
-        self.j_origin_r = QLineEdit("0"); self.j_origin_p = QLineEdit("0"); self.j_origin_yaw = QLineEdit("0")
+        
+        rpy_h2 = QHBoxLayout()
+        rpy_h2.setSpacing(6)
+        self.j_origin_r = QLineEdit("0")
+        self.j_origin_p = QLineEdit("0")
+        self.j_origin_yaw = QLineEdit("0")
         for b in (self.j_origin_r,self.j_origin_p,self.j_origin_yaw): b.setMaximumWidth(70)
         rpy_h2.addWidget(QLabel("roll:")); rpy_h2.addWidget(self.j_origin_r)
         rpy_h2.addWidget(QLabel("pitch:")); rpy_h2.addWidget(self.j_origin_p)
         rpy_h2.addWidget(QLabel("yaw:")); rpy_h2.addWidget(self.j_origin_yaw)
-        axis_h = QHBoxLayout(); axis_h.setSpacing(6)
-        self.axis_x = QLineEdit("0"); self.axis_y = QLineEdit("0"); self.axis_z = QLineEdit("1")
+        
+        axis_h = QHBoxLayout()
+        axis_h.setSpacing(6)
+        self.axis_x = QLineEdit("0")
+        self.axis_y = QLineEdit("0")
+        self.axis_z = QLineEdit("1")
         for b in (self.axis_x,self.axis_y,self.axis_z): b.setMaximumWidth(70)
         axis_h.addWidget(QLabel("x:")); axis_h.addWidget(self.axis_x)
         axis_h.addWidget(QLabel("y:")); axis_h.addWidget(self.axis_y)
         axis_h.addWidget(QLabel("z:")); axis_h.addWidget(self.axis_z)
-        limits_h = QHBoxLayout(); limits_h.setSpacing(6)
-        self.limit_l = QLineEdit("-1.57"); self.limit_u = QLineEdit("1.57"); self.effort = QLineEdit("10"); self.velocity = QLineEdit("1.0")
+        
+        limits_h = QHBoxLayout()
+        limits_h.setSpacing(6)
+        self.limit_l = QLineEdit("-1.57")
+        self.limit_u = QLineEdit("1.57")
+        self.effort = QLineEdit("10")
+        self.velocity = QLineEdit("1.0")
         for b in (self.limit_l,self.limit_u,self.effort,self.velocity): b.setMaximumWidth(70)
         limits_h.addWidget(QLabel("lower:")); limits_h.addWidget(self.limit_l)
         limits_h.addWidget(QLabel("upper:")); limits_h.addWidget(self.limit_u)
         limits_h.addWidget(QLabel("effort:")); limits_h.addWidget(self.effort)
         limits_h.addWidget(QLabel("velocity:")); limits_h.addWidget(self.velocity)
 
-        add_joint_btn = QPushButton("Add Joint"); add_joint_btn.clicked.connect(self._on_add_joint)
+        add_joint_btn = QPushButton("Add Joint")
+        add_joint_btn.clicked.connect(self._on_add_joint)
         self.joint_type.currentTextChanged.connect(self._joint_type_changed)
 
         jf.addRow("Name", self.joint_name)
@@ -556,26 +633,52 @@ class URDFBuilderUI(QWidget):
         jf.addRow("Limits", limits_h)
         jf.addRow(add_joint_btn)
         joint_g.setLayout(jf)
-        left_v.addWidget(joint_g)
+        right_column.addWidget(joint_g)
 
-        # apply/export
+        # Add stretch to push buttons to bottom
+        right_column.addStretch(1)
+
+        # Add buttons at bottom of right column
         btn_h = QHBoxLayout()
-        self.apply_btn = QPushButton("Apply Edited URDF → Model"); self.apply_btn.clicked.connect(self._apply_edited_urdf)
-        self.export_btn = QPushButton("Export URDF"); self.export_btn.clicked.connect(self._export_urdf)
-        btn_h.addWidget(self.apply_btn); btn_h.addWidget(self.export_btn)
-        left_v.addLayout(btn_h)
+        self.apply_btn = QPushButton("Apply Edited URDF → Model")
+        self.apply_btn.clicked.connect(self._apply_edited_urdf)
+        self.export_btn = QPushButton("Export URDF")
+        self.export_btn.clicked.connect(self._export_urdf)
+        btn_h.addWidget(self.apply_btn)
+        btn_h.addWidget(self.export_btn)
+        right_column.addLayout(btn_h)
 
-        # RIGHT column
-        right_v = QVBoxLayout(); right_v.setSpacing(8)
-        right_v.addWidget(QLabel("<b>URDF Preview (editable)</b>"))
-        self.urdf_text = QTextEdit(); self.urdf_text.setMinimumHeight(160)
-        right_v.addWidget(self.urdf_text)
-        right_v.addWidget(QLabel("<b>3D Preview (interactive)</b>"))
-        self.gl = GLWidget(self.model); self.gl.setMinimumHeight(360)
-        right_v.addWidget(self.gl)
+        # Add left and right columns to top row
+        top_row.addLayout(left_column, 1)
+        top_row.addLayout(right_column, 1)
 
-        main.addLayout(left_v, 1)
-        main.addLayout(right_v, 2)
+        # BOTTOM ROW: URDF Preview | 3D Preview
+        bottom_row = QHBoxLayout()
+        bottom_row.setSpacing(10)
+
+        # LEFT: URDF Preview
+        urdf_preview_column = QVBoxLayout()
+        urdf_preview_column.setSpacing(8)
+        urdf_preview_column.addWidget(QLabel("<b>URDF Preview (editable)</b>"))
+        self.urdf_text = QTextEdit()
+        self.urdf_text.setMinimumHeight(160)
+        urdf_preview_column.addWidget(self.urdf_text)
+
+        # RIGHT: 3D Preview
+        gl_preview_column = QVBoxLayout()
+        gl_preview_column.setSpacing(8)
+        gl_preview_column.addWidget(QLabel("<b>3D Preview (interactive)</b>"))
+        self.gl = GLWidget(self.model)
+        self.gl.setMinimumHeight(360)
+        gl_preview_column.addWidget(self.gl)
+
+        bottom_row.addLayout(urdf_preview_column, 1)
+        bottom_row.addLayout(gl_preview_column, 1)
+
+        # Add all to main layout
+        main.addLayout(top_row, 1)
+        main.addLayout(bottom_row, 1)
+
         self.setLayout(main)
         self.resize(1300, 820)
 
